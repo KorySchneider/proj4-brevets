@@ -33,24 +33,6 @@
 <h1>ACP Brevet Times</h1>
   <p>This worksheet is for ACP-sanctioned brevets between 200 and 1000 kilometers</p>
 
-  <!--
-  -- If there are any warnings or other messages from a prior
-  -- request to the server,
-  -- they appear above the rest of the content, just until the next
-  -- action.  (This is only on request/response transactions that
-  -- result in regenerating the page, not on every xmlhttp request.)
-  -->
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
 <!-- Design on bootstrap grid -->
 <form role="form">
 <div class="row">
@@ -63,7 +45,7 @@
     <option value="600">600km</option>
     <option value="1000">1000km</option>
   </select>
-  </div> <!-- columns 1--4  -->
+  </div> <!-- columns 1-4  -->
   <div class="col-md-6">
     <label>Begins at</label>
     <input type=date name="begin_date" id="begin_date" value="2017-01-01" />
@@ -71,11 +53,8 @@
   </div> <!-- columns 5-10 -->
   </div> <!-- row -->
 
-  <br />  <!-- Cosmetic -- a little vertical space -->
-  <!-- Although we do not use tables for general page layout, they are
-       appropriate for something that really is a table, like this
-       one.  We allocate it the full 12 columns of the bootstrap grid.
-  -->
+  <br />
+
   <div class="row">
   <div class="col-md-12">
   <table class="control_time_table">
@@ -128,29 +107,24 @@
     var close_time_field = control.find("input[name='close']");
    
     $.getJSON(TIME_CALC_URL, { km: km },
-      // response handler
       function(data) {
          var times = data.result;
          console.log("Got a response: " +  times);
          console.log("Response.open = " + times.open);
          open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
          close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
-       } // end of handler function
-     );// End of getJSON
+       }
+     );
     }
 
   $(document).ready(function(){
-   // Do the following when the page is finished loading
-
       $('input[name="miles"]').change(
          function() {
              var miles = parseFloat($(this).val());
              var km = (1.609344 * miles).toFixed(1) ;
-             console.log("Converted " + miles + " miles to " + km + " kilometers");
              var control_entry = $(this).parents(".control")
              var target = control_entry.find("input[name='km']");
              target.val( km );
-             // Then calculate times for this entry
              calc_times(control_entry);
           });
 
@@ -158,15 +132,13 @@
          function() {
              var km = parseFloat($(this).val());
              var miles = (0.621371 * km).toFixed(1) ;
-             console.log("Converted " + km + " km to " + miles + " miles");
              var control_entry = $(this).parents(".control")
              var target = control_entry.find("input[name='miles']");
              target.val( miles );
-             // Then calculate times for this entry
              calc_times(control_entry);
           });
 
-     });   // end of what we do on document ready
+     });
 
 </script>
 
