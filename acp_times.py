@@ -12,7 +12,7 @@ import arrow
 #  automated tests for grading.  You must keep
 #  these signatures even if you don't use all the
 #  same arguments.  Arguments are explained in the
-#  javadoc comments. 
+#  javadoc comments.
 #
 
 
@@ -45,5 +45,3 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
        This will be in the same time zone as the brevet start time.
     """
     return arrow.now().isoformat()
-
-
