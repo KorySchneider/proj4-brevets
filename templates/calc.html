@@ -59,12 +59,12 @@
   <div class="col-md-12">
   <table class="control_time_table">
       <tr>
-	<th> Miles </th>
-	<th> Km </th>
-	<th>Location</th>
-	<th>Open</th>
-	<th>Close</th>
-	<th>Notes</th>
+    <th> Miles </th>
+    <th> Km </th>
+    <th>Location</th>
+    <th>Open</th>
+    <th>Close</th>
+    <th>Notes</th>
       </tr>
    {% for row in range(20) %}
     <tr class="control">
@@ -73,11 +73,11 @@
            min="0" max="900" size="5" /></td>
       <!-- Dist (km) -->
       <td><input name="km" type="text"
-	   min="0" max="1100" size="5" /> </td>
+       min="0" max="1100" size="5" /> </td>
       <!-- Location (optional) -->
       <td><input name="location" type="text"
         placeholder="Optional location name"
-	size="20" /> </td>
+    size="20" /> </td>
       <!-- Open time (read only, set by JavaScript function -->
       <td><input name="open" type="datetime" value="" readonly /></td>
       <!-- Close time (read only, set by JavaScript function -->
@@ -105,39 +105,38 @@
     var km = control.find("input[name='km']").val();
     var open_time_field = control.find("input[name='open']");
     var close_time_field = control.find("input[name='close']");
-   
+
     $.getJSON(TIME_CALC_URL, { km: km },
       function(data) {
-         var times = data.result;
-         console.log("Got a response: " +  times);
-         console.log("Response.open = " + times.open);
-         open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
-         close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
-       }
-     );
-    }
+        var times = data.result;
+        console.log("Got a response: " +  times);
+        console.log("Response.open = " + times.open);
+        open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
+        close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
+      }
+    );
+  }
 
   $(document).ready(function(){
-      $('input[name="miles"]').change(
-         function() {
-             var miles = parseFloat($(this).val());
-             var km = (1.609344 * miles).toFixed(1) ;
-             var control_entry = $(this).parents(".control")
-             var target = control_entry.find("input[name='km']");
-             target.val( km );
-             calc_times(control_entry);
-          });
+    $('input[name="miles"]').change(
+      function() {
+         var miles = parseFloat($(this).val());
+         var km = (1.609344 * miles).toFixed(1) ;
+         var control_entry = $(this).parents(".control")
+         var target = control_entry.find("input[name='km']");
+         target.val( km );
+         calc_times(control_entry);
+      });
 
       $('input[name="km"]').change(
-         function() {
-             var km = parseFloat($(this).val());
-             var miles = (0.621371 * km).toFixed(1) ;
-             var control_entry = $(this).parents(".control")
-             var target = control_entry.find("input[name='miles']");
-             target.val( miles );
-             calc_times(control_entry);
-          });
-
+        function() {
+          var km = parseFloat($(this).val());
+          var miles = (0.621371 * km).toFixed(1) ;
+          var control_entry = $(this).parents(".control")
+          var target = control_entry.find("input[name='miles']");
+          target.val( miles );
+          calc_times(control_entry);
+        });
      });
 
 </script>
