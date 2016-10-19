@@ -29,6 +29,13 @@ def open_time( control_dist_km, brevet_dist_km, brevet_start_time ):
        An ISO 8601 format date string indicating the control open time.
        This will be in the same time zone as the brevet start time.
     """
+
+    # Max speeds for various brevet lengths
+    ACP_brevets = { 200: 34,
+                    400: 32,
+                    600: 30,
+                   1000: 28 }
+
     return arrow.now().isoformat()
 
 def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
@@ -44,4 +51,11 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
        An ISO 8601 format date string indicating the control close time.
        This will be in the same time zone as the brevet start time.
     """
+
+    # Min speeds for various brevet lengths
+    ACP_brevets = { 200: 15,
+                    400: 15,
+                    600: 15,
+                   1000: 11.428 }
+
     return arrow.now().isoformat()
