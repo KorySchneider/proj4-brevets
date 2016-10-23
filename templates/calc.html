@@ -50,6 +50,7 @@
     <label>Begins at</label>
     <input type=date name="begin_date" id="begin_date" value="2017-01-01" />
     <input type=time name="begin_time" id="begin_time" value="00:00"    />
+    <p style="display: inline">(all times UTC)</p>
   </div> <!-- columns 5-10 -->
   </div> <!-- row -->
 
@@ -102,17 +103,30 @@
   // (If we want to also keep the ISO-formatted times, we'll need to
   // stash them in hidden fields.)
   function calc_times(control) {
-    var km = control.find("input[name='km']").val();
     var open_time_field = control.find("input[name='open']");
     var close_time_field = control.find("input[name='close']");
 
-    $.getJSON(TIME_CALC_URL, { km: km },
+    var controle_dist_km = control.find("input[name='km']").val();
+    if (controle_dist_km < 0) {
+        control.find("input[name='km'], input[name='miles']").css('color', 'red');
+        close_time_field.val('');
+        open_time_field.val('');
+        return;
+    } else {
+        // Change back to black when they enter a valid number
+        control.find("input[name='km'], input[name='miles']").css('color', 'black');
+    }
+    var begin_date = $("input[name='begin_date']").val();
+    var begin_time = $("input[name='begin_time']").val();
+    var brevet_dist_km = $("select[name='distance']").val();
+
+    $.getJSON(TIME_CALC_URL, { controle_dist_km: controle_dist_km, begin_date: begin_date, begin_time: begin_time, brevet_dist_km: brevet_dist_km},
       function(data) {
         var times = data.result;
         console.log("Got a response: " +  times);
         console.log("Response.open = " + times.open);
-        open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
-        close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
+        open_time_field.val( moment(times.open).utc().format("ddd M/D H:mm"));
+        close_time_field.val( moment(times.close).utc().format("ddd M/D H:mm"));
       }
     );
   }

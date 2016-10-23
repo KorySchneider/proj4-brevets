@@ -13,7 +13,6 @@ import arrow
 #  these signatures even if you don't use all the
 #  same arguments.  Arguments are explained in the
 #  javadoc comments.
-#
 
 
 def open_time( control_dist_km, brevet_dist_km, brevet_start_time ):
@@ -31,12 +30,20 @@ def open_time( control_dist_km, brevet_dist_km, brevet_start_time ):
     """
 
     # Max speeds for various brevet lengths
-    ACP_brevets = { 200: 34,
-                    400: 32,
-                    600: 30,
-                   1000: 28 }
+    max_speeds = { 200: 34,
+                   300: 32,
+                   400: 32,
+                   600: 30,
+                  1000: 28 }
 
-    return arrow.now().isoformat()
+    time = str(control_dist_km / max_speeds[brevet_dist_km]).split('.')
+    hours = time[0]
+    minutes = str(int(round(float('.' + time[1]) * 60)))
+
+    brevet_start_time = arrow.get(brevet_start_time)
+    open_time = brevet_start_time.replace(hours=+int(hours), minutes=+int(minutes))
+
+    return str(open_time.isoformat())
 
 def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
     """
@@ -52,10 +59,36 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
        This will be in the same time zone as the brevet start time.
     """
 
-    # Min speeds for various brevet lengths
-    ACP_brevets = { 200: 15,
-                    400: 15,
-                    600: 15,
-                   1000: 11.428 }
+    # rusa.org/pages/rulesForRiders
+    # article 9
 
-    return arrow.now().isoformat()
+    # Min speeds for various brevet lengths
+    min_speeds = { 200: 15,
+                   400: 15,
+                   600: 15,
+                  1000: 11.428 }
+
+    # Overall time limits for brevets according to distance
+    # brevet_distance: (HH,MM)
+    end_times = { 200: (13,30),
+                  300: (20,00),
+                  400: (27,00),
+                  600: (40,00),
+                 1000: (75,00) }
+
+    # TODO controle can't be >20% further than brevet dist?
+    # really really big numbers? ^ this would handle that
+
+    if control_dist_km == 0:
+        close_time = brevet_start_time.replace(hours=+1)
+    elif control_dist_km >= brevet_dist_km:
+        hours = end_times[brevet_dist_km][0]
+        minutes = end_times[brevet_dist_km][1]
+        close_time = brevet_start_time.replace(hours=+int(hours), minutes=+int(minutes))
+    else:
+        time = str(control_dist_km / min_speeds[brevet_dist_km]).split('.')
+        hours = time[0]
+        minutes = str(int(round(float('.' + time[1]) * 60)))
+        close_time = brevet_start_time.replace(hours=+int(hours), minutes=+int(minutes))
+
+    return str(close_time.isoformat())
