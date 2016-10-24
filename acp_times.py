@@ -36,7 +36,10 @@ def open_time( control_dist_km, brevet_dist_km, brevet_start_time ):
                    600: 30,
                   1000: 28 }
 
-    time = str(control_dist_km / max_speeds[brevet_dist_km]).split('.')
+    if control_dist_km > brevet_dist_km:
+        control_dist_km = 200
+
+    time = str(float(control_dist_km / max_speeds[brevet_dist_km])).split('.')
     hours = time[0]
     minutes = str(int(round(float('.' + time[1]) * 60)))
 
@@ -86,7 +89,7 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
         minutes = end_times[brevet_dist_km][1]
         close_time = brevet_start_time.replace(hours=+int(hours), minutes=+int(minutes))
     else:
-        time = str(control_dist_km / min_speeds[brevet_dist_km]).split('.')
+        time = str(float(control_dist_km / min_speeds[brevet_dist_km])).split('.')
         hours = time[0]
         minutes = str(int(round(float('.' + time[1]) * 60)))
         close_time = brevet_start_time.replace(hours=+int(hours), minutes=+int(minutes))

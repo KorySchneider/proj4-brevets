@@ -55,6 +55,8 @@
   </div> <!-- row -->
 
   <br />
+  <p class='message'></p>
+  <br />
 
   <div class="row">
   <div class="col-md-12">
@@ -97,6 +99,13 @@
   var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
   var TIME_CALC_URL = SCRIPT_ROOT + "/_calc_times";
 
+  function flashMessage(message, timeout_ms) {
+    $('.message').text(message);
+    if (timeout_ms != 0) {
+      setTimeout(function() { $('.message').text(''); }, timeout_ms);
+    }
+  }
+
   // Pass calctimes a <td> element containing the data for a control.
   // It extracts the distance and calls the server to get times to
   // fill in open and close times in a human-readable format.
@@ -106,19 +115,29 @@
     var open_time_field = control.find("input[name='open']");
     var close_time_field = control.find("input[name='close']");
 
+    var begin_date = $("input[name='begin_date']").val();
+    var begin_time = $("input[name='begin_time']").val();
+    var brevet_dist_km = $("select[name='distance']").val();
     var controle_dist_km = control.find("input[name='km']").val();
+
+    // Check for negative number input
     if (controle_dist_km < 0) {
         control.find("input[name='km'], input[name='miles']").css('color', 'red');
         close_time_field.val('');
         open_time_field.val('');
+        flashMessage('Controle distance cannot be negative.', 5000);
         return;
+    // Check if controle is too far for length of brevet
+    } else if (parseInt(controle_dist_km) > (parseInt(brevet_dist_km) + (parseInt(brevet_dist_km) * .1))) {
+        control.find("input[name='km'], input[name='miles']").css('color', 'red');
+        close_time_field.val('');
+        open_time_field.val('');
+        flashMessage('Controle too far for brevet length.', 5000);
+        return;
+    // Change back to black when they enter a valid number
     } else {
-        // Change back to black when they enter a valid number
         control.find("input[name='km'], input[name='miles']").css('color', 'black');
     }
-    var begin_date = $("input[name='begin_date']").val();
-    var begin_time = $("input[name='begin_time']").val();
-    var brevet_dist_km = $("select[name='distance']").val();
 
     $.getJSON(TIME_CALC_URL, { controle_dist_km: controle_dist_km, begin_date: begin_date, begin_time: begin_time, brevet_dist_km: brevet_dist_km},
       function(data) {
