@@ -62,9 +62,6 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
        This will be in the same time zone as the brevet start time.
     """
 
-    # rusa.org/pages/rulesForRiders
-    # article 9
-
     # Min speeds for various brevet lengths
     min_speeds = { 200: 15,
                    400: 15,
@@ -72,15 +69,11 @@ def close_time( control_dist_km, brevet_dist_km, brevet_start_time ):
                   1000: 11.428 }
 
     # Overall time limits for brevets according to distance
-    # brevet_distance: (HH,MM)
     end_times = { 200: (13,30),
                   300: (20,00),
                   400: (27,00),
                   600: (40,00),
                  1000: (75,00) }
-
-    # TODO controle can't be >20% further than brevet dist?
-    # really really big numbers? ^ this would handle that
 
     if control_dist_km == 0:
         close_time = brevet_start_time.replace(hours=+1)
